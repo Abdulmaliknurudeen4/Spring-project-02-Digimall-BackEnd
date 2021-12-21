@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+	<appender name="consoleAppender"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>%-5level %msg %d{HH:mm:ss.SSS} %logger{36} %n</Pattern>
+		</encoder>
+	</appender>
+<!-- Setting logger location and setting event propagation additivity to false so that it doesn't display message twice -->
+	<logger name="com.alpha.practice" level="INFO" additivity="false">
+		<appender-ref ref="consoleAppender" />
+	</logger>
+<!-- Setting the type of message it will show so that you don't see spring rubbish console -->
+	<root level="INFO">
+		<appender-ref ref="consoleAppender"></appender-ref>
+	</root>
+</configuration>
