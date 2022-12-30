@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@ComponentScan(basePackages = { "com.alpha.practice.digimallbackend.dto" })
+@ComponentScan(basePackages = { "com.alpha.practice.digimallbackend.*" })
 @EnableTransactionManagement
 public class HiberConfig {
 	// Change the below based on the DBMS you choose
@@ -28,7 +29,6 @@ public class HiberConfig {
 	@Bean("dataSource")
 	public DataSource getDataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
-
 		dataSource.setDriverClassName(DATABASE_DRIVER);
 		dataSource.setUrl(DATABASE_URL);
 		dataSource.setUsername(DATABASE_USERNAME);
@@ -38,12 +38,11 @@ public class HiberConfig {
 	}
 
 	@Bean
-	public SessionFactory getSessionFactory(DataSource dataSource) {
-
-		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource);
+	@Autowired
+	public SessionFactory sessionFactory(DataSource datasource) {
+		LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(datasource);
 		builder.addProperties(getHibernateProperties());
-
-		builder.scanPackages("com.alpha.practice.digimallbackend.dto");
+		builder.scanPackages("com.alpha.practice.digimallbackend.*");
 		return builder.buildSessionFactory();
 	}
 
@@ -60,7 +59,8 @@ public class HiberConfig {
 
 	// transaction Manager Bean to manage Transaction
 	@Bean
-	public HibernateTransactionManager getTransactionManager(SessionFactory sessionfactory) {
+	@Autowired
+	public HibernateTransactionManager transactionManager(SessionFactory sessionfactory) {
 		HibernateTransactionManager transaction = new HibernateTransactionManager(sessionfactory);
 		return transaction;
 	}
